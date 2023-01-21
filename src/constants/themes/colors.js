@@ -12,5 +12,6 @@ export const COLORS = {
     white: '#FFFFFF',
     black: '#000000',
     gray: '#9E9E9E',
+    helperText: '#C0353C',
     
 }

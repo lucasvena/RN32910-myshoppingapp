@@ -1,12 +1,19 @@
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+import { removeFromCart, confirmCart } from '../../store/actions';
 import { CartItem } from "../../components";
-import { CART } from "../../constants/data";
 import { styles } from "./styles";
 
 const Cart = ({ navigation }) => {
-    const total = 1400;
+    const dispatch = useDispatch();
+    const cart = useSelector ((state) => state.cart.items);
+    const total = useSelector((state) => state.cart.total);
     const onDelete = (id) => {
-        console.warn('Delete', id);
+        dispatch(removeFromCart(id));
+    }
+
+    const onCreateOrder = () => {
+        dispatch(confirmCart(cart, total));
     }
 
     const renderItem = ({ item }) => (
@@ -16,10 +23,15 @@ const Cart = ({ navigation }) => {
     return(
         <View style={styles.container}>
             <View style={styles.listContainer}>
-                <FlatList data={CART} renderItem={renderItem} style={styles.listContainer} keyExtractor={keyExtractor} />    
+                <FlatList 
+                    data={cart} 
+                    renderItem={renderItem} 
+                    style={styles.listContainer} 
+                    keyExtractor={keyExtractor} 
+                />    
             </View>
             <View style={styles.footer}>
-                <TouchableOpacity style={styles.buttonConfirm} onPress={ () => null }>
+                <TouchableOpacity disabled={cart.length === 0} style={cart.length === 0 ? styles.buttonDisabledConfirm : styles.buttonConfirm} onPress={ onCreateOrder }>
                     <Text style={styles.textButtonConfirm}>Confirm</Text>
                     <View style={styles.totalContainer}>
                         <Text style={styles.textTotalTitle}>TOTAL</Text>
